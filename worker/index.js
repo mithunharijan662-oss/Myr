@@ -51,7 +51,7 @@ export default {
           body: JSON.stringify({
             systemInstruction: {
               parts: [{
-                text: "You are MYRA, a helpful and friendly AI assistant. Reply naturally in the language used by the user."
+                text: "You are MYRA, a helpful and friendly AI assistant. Reply in natural, conversational Hindi by default. If the user explicitly asks for another language, reply in that language."
               }]
             },
             contents: [{
