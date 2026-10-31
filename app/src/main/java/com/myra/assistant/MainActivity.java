@@ -117,9 +117,42 @@ public class MainActivity extends Activity {
         voice.setText("🔊");
         bottom.addView(voice);
 
+        LinearLayout serviceControls = new LinearLayout(this);
+        serviceControls.setOrientation(LinearLayout.HORIZONTAL);
+        serviceControls.setGravity(Gravity.CENTER);
+
+        Button startBackground = new Button(this);
+        startBackground.setText("BACKGROUND START");
+
+        Button stopBackground = new Button(this);
+        stopBackground.setText("BACKGROUND STOP");
+
+        serviceControls.addView(startBackground,
+            new LinearLayout.LayoutParams(0, -2, 1));
+        serviceControls.addView(stopBackground,
+            new LinearLayout.LayoutParams(0, -2, 1));
+
+        startBackground.setOnClickListener(v -> {
+            Intent serviceIntent = new Intent(this, MyraService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+            Toast.makeText(this, "MYRA Background Started",
+                Toast.LENGTH_SHORT).show();
+        });
+
+        stopBackground.setOnClickListener(v -> {
+            stopService(new Intent(this, MyraService.class));
+            Toast.makeText(this, "MYRA Background Stopped",
+                Toast.LENGTH_SHORT).show();
+        });
+
         root.addView(title);
         root.addView(subtitle);
         root.addView(status);
+        root.addView(serviceControls);
         root.addView(scroll,
             new LinearLayout.LayoutParams(-1, 0, 1));
         root.addView(bottom);
