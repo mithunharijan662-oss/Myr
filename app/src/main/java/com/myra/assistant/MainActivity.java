@@ -198,17 +198,6 @@ public class MainActivity extends Activity {
                     tts.setLanguage(Locale.US);
                 }
 
-                if (Build.VERSION.SDK_INT >= 21 && tts.getVoices() != null) {
-                    for (Voice v : tts.getVoices()) {
-                        String name = v.getName().toLowerCase(Locale.ROOT);
-                        if (name.contains("female") &&
-                            !v.isNetworkConnectionRequired()) {
-                            tts.setVoice(v);
-                            break;
-                        }
-                    }
-                }
-
                 tts.setSpeechRate(0.95f);
                 ttsReady = true;
             }
