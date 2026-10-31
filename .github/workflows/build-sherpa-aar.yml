@@ -1,0 +1,40 @@
+name: Build Sherpa ONNX AAR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-aar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MYRA
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download Sherpa ONNX v2.0.1
+        run: |
+          git clone --depth 1 --branch v2.0.1 https://github.com/k2-fsa/sherpa-onnx.git
+          cd sherpa-onnx
+          curl -L --fail -o sherpa-onnx-android.tar.bz2 \
+            https://github.com/k2-fsa/sherpa-onnx/releases/download/v2.0.1/sherpa-onnx-v2.0.1-android.tar.bz2
+          tar -xjf sherpa-onnx-android.tar.bz2 ./jniLibs/arm64-v8a
+          cp jniLibs/arm64-v8a/*.so android/SherpaOnnxAar/sherpa_onnx/src/main/jniLibs/arm64-v8a/
+
+      - name: Build AAR
+        working-directory: sherpa-onnx/android/SherpaOnnxAar
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :sherpa_onnx:assembleRelease
+
+      - name: Upload AAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: sherpa-onnx-v2.0.1-arm64-aar
+          path: sherpa-onnx/android/SherpaOnnxAar/sherpa_onnx/build/outputs/aar/*.aar
+          if-no-files-found: error
